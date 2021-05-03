@@ -1,0 +1,6 @@
+io/flutter/plugins/GeneratedPluginRegistrant.java
+ io.flutter.plugins.GeneratedPluginRegistrant
+com/example/agenda/MainActivity.java
+ com.example.agenda.MainActivity
+com/example/agenda/BuildConfig.java
+ com.example.agenda.BuildConfig
