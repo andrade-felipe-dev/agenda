@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:agenda/helpers/contact_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ContactPage extends StatefulWidget {
 
@@ -44,7 +45,9 @@ class _ContactPageState extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: _requestPop,
+      child: Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: Text(_editedContact.name ?? "Novo Contato"),
@@ -77,6 +80,14 @@ class _ContactPageState extends State<ContactPage> {
                   ),
                 ),
               ),
+              onTap: () {
+                ImagePicker.pickImage(source: ImageSource.camera).then((file){
+                    if(file == null) return;
+                    setState(() {
+                      _editedContact.img = file.path;
+                    });
+                  });
+              },
             ),
             TextField(
               decoration: InputDecoration(labelText: "Nome"),
@@ -105,13 +116,42 @@ class _ContactPageState extends State<ContactPage> {
               keyboardType: TextInputType.phone,
               controller: _phoneController,
             ),
-            
-
           ],
         ),
       ),
+    ), 
     );
   }
 
+  Future<bool> _requestPop() {
+    if(_userEdited){
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Descartar alterações?"),
+            content: Text("Se sair as alterações serão perdidas"),
+            actions: [
+              FlatButton(
+                child: Text("Cancelar"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              FlatButton(
+                child: Text("Sim"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+      return Future.value(false);
+    } else {
+      return Future.value(true);
+    }
+  }
   
 }
